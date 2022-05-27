@@ -1,0 +1,150 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "previewer.fullname" . }}
+  labels:
+    {{- include "previewer.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "previewer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "previewer.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      {{- if or (.Values.storage.enabled) (.Values.pivottable.storage.enabled) }}
+      volumes:
+      {{- if .Values.storage.enabled }}
+      - name: previewer-cache
+        persistentVolumeClaim: 
+          claimName: previewer-cache
+      {{- end }}
+      {{- if .Values.pivottable.storage.enabled }}
+      - name: pivottable-cache
+        persistentVolumeClaim: 
+          claimName: pivottable-cache
+      {{- end }}
+      {{- end }}
+      serviceAccountName: {{ include "previewer.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-pivottable
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.version }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/bin/bash"
+          args:
+            - "-c"
+            - "gunicorn pivot_table:server"
+          {{- if .Values.pivottable.storage.enabled }}
+          volumeMounts:
+          - name: pivottable-cache
+            mountPath: {{ .Values.pivottable.storage.dir | default "/cache-directory" | quote }} 
+          {{- end }}
+          env:
+            {{ if .Values.envs }}
+            {{- toYaml .Values.envs | nindent 12  }}
+            {{ end }}
+            - name: PORT
+              value: "8051"
+            - name: HOST
+              value: {{ .Values.config.host | quote  }}
+            - name: MINIO_HOST_URL
+              value: {{ .Values.config.minio.host | quote  }}
+            - name: MINIO_HOST_IS_SECURE
+              value: {{ .Values.config.minio.useSSL | quote  }}
+            - name: MINIO_ACCESS_KEY
+              value: {{ .Values.config.minio.accessKey | quote  }}
+            - name: MINIO_SECRET_KEY
+              value: {{ .Values.config.minio.secretKey | quote  }}
+            - name: CACHE_REDIS_ENABLED
+              value: "false"
+            {{- if .Values.pivottable.storage.enabled }}
+            - name: FS_CACHE_DIR
+              value: {{ .Values.pivottable.storage.dir | default "/cache-directory" | quote }}
+            {{- end }}
+            - name: CACHE_ENABLED
+              value: {{ .Values.pivottable.storage.enabled | quote }}
+          ports:
+            - containerPort: 8051
+              name: port-8051
+          livenessProbe:
+            httpGet:
+              path: /
+              port: port-8051
+          readinessProbe:
+            httpGet:
+              path: /
+              port: port-8051
+          resources:
+            {{- toYaml .Values.pivottable.resources | nindent 12 }}
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.version }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.storage.enabled }}
+          volumeMounts:
+          - name: previewer-cache
+            mountPath: {{ .Values.storage.dir | default "/cache-directory" | quote }}
+          {{- end }}
+          env:
+            {{ if .Values.envs }}
+            {{- toYaml .Values.envs | nindent 12  }}
+            {{ end }}
+            - name: PAGE_SIZE
+              value: {{ .Values.config.pageSize | quote  }}
+            - name: PORT
+              value: "8050"
+            - name: HOST
+              value: {{ .Values.config.host | quote  }}
+            - name: MINIO_HOST_URL
+              value: {{ .Values.config.minio.host | quote  }}
+            - name: MINIO_HOST_IS_SECURE
+              value: {{ .Values.config.minio.useSSL | quote  }}
+            - name: MINIO_ACCESS_KEY
+              value: {{ .Values.config.minio.accessKey | quote  }}
+            - name: MINIO_SECRET_KEY
+              value: {{ .Values.config.minio.secretKey | quote  }}
+            - name: CACHE_REDIS_ENABLED
+              value: "false"
+            {{- if .Values.storage.enabled }}
+            - name: FS_CACHE_DIR
+              value: {{ .Values.storage.dir | default "/cache-directory" | quote }}
+            {{- end }}
+            - name: CACHE_ENABLED
+              value: {{ .Values.storage.enabled | quote }}
+          ports:
+            - containerPort: 8050
+              name: port-8050
+          livenessProbe:
+            httpGet:
+              path: /
+              port: port-8050
+          readinessProbe:
+            httpGet:
+              path: /
+              port: port-8050
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

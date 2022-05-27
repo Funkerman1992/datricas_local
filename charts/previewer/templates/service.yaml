@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "previewer.fullname" . }}
+  labels:
+    {{- include "previewer.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: port-8050
+      name: port-8050
+    - port: {{ .Values.pivottable.service.port }}
+      targetPort: port-8051
+      name: port-8051
+  selector:
+    {{- include "previewer.selectorLabels" . | nindent 4 }}

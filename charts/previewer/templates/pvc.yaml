@@ -1,0 +1,15 @@
+{{- if .Values.storage.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: previewer-cache
+ labels:
+   app: previewer
+spec:
+ accessModes:
+   - ReadWriteOnce
+ resources:
+   requests:
+     storage: {{ .Values.storage.requests | quote  }}
+ storageClassName: {{ .Values.storage.className | quote  }}
+{{- end }}
