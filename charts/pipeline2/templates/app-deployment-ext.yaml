@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pipeline2.app.fullname" . }}
+  name: {{ include "pipeline2.app-deployment.fullname" . }}
   labels:
     {{- include "pipeline2.app.labels" . | nindent 4 }}
 spec:
