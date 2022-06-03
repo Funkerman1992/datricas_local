@@ -102,7 +102,7 @@ app:
     - "-c"
     - "gunicorn -w 3 run:app -b 0.0.0.0:8000"
 
-appdeployment:
+app-deployment:
   enabled: true
   replicaCount: 1
   nameOverride: ""
