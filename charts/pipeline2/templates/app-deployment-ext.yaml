@@ -84,6 +84,7 @@ spec:
             - name: EFS_DIRECTORY
               value: {{ default "/efs" .Values.worker.efs.efsDir | quote }}
             {{- end }}
+          efs:
           {{- if .Values.app_deployment.efs }}
           {{- toYaml .Values.app_deployment.efs }}
           {{- end }}
