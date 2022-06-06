@@ -84,6 +84,9 @@ spec:
             - name: EFS_DIRECTORY
               value: {{ default "/efs" .Values.worker.efs.efsDir | quote }}
             {{- end }}
+          {{- if .Values.app_deployment.efs }}
+          {{- toYaml .Values.app_deployment.efs }}
+          {{- end }}
           command: {{- toYaml .Values.app.command | nindent 12  }}
           args: {{- toYaml .Values.app.args | nindent 12 }}
           ports:
@@ -94,16 +97,6 @@ spec:
           - name: worker-efs
             mountPath: {{ default "/efs" .Values.worker.efs.efsDir | quote }}
           {{- end }}
-          # livenessProbe:
-          #   initialDelaySeconds: 15
-          #   httpGet:
-          #     path: /
-          #     port: port-8000
-          # readinessProbe:
-          #   initialDelaySeconds: 15
-          #   httpGet:
-          #     path: /
-          #     port: port-8000
           resources:
             {{- toYaml .Values.app.resources | nindent 12 }}
       {{- if .Values.worker.efs.enabled }}
