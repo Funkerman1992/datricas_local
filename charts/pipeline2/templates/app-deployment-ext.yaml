@@ -84,10 +84,6 @@ spec:
             - name: EFS_DIRECTORY
               value: {{ default "/efs" .Values.worker.efs.efsDir | quote }}
             {{- end }}
-          efs:
-          {{- if .Values.app_deployment.efs }}
-          {{- toYaml .Values.app_deployment.efs }}
-          {{- end }}
           command: {{- toYaml .Values.app.command | nindent 12  }}
           args: {{- toYaml .Values.app.args | nindent 12 }}
           ports:
