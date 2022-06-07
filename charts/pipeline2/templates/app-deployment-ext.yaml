@@ -96,7 +96,7 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.app.resources | nindent 12 }}
-      {{- if .Values.worker.efs.enabled }}
+      {{- if .Values.app_deployment.efs.enabled }}
       volumes:
       - name: worker-efs
         persistentVolumeClaim:
