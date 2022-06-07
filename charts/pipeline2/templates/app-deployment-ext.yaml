@@ -82,7 +82,7 @@ spec:
             {{- end }}
             {{- if .Values.app_deployment.efs.enabled }}
             - name: EFS_DIRECTORY
-              value: {{ default "/efs" .Values.worker.efs.efsDir | quote }}
+              value: {{ default "/efs" .Values.app_deployment.efs.efsDir | quote }}
             {{- end }}
           command: {{- toYaml .Values.app.command | nindent 12  }}
           args: {{- toYaml .Values.app.args | nindent 12 }}
@@ -92,7 +92,7 @@ spec:
           {{- if .Values.worker.efs.enabled }}
           volumeMounts:
           - name: worker-efs
-            mountPath: {{ default "/efs" .Values.worker.efs.efsDir | quote }}
+            mountPath: {{ default "/efs" .Values.app_deployment.efs.efsDir | quote }}
           {{- end }}
           resources:
             {{- toYaml .Values.app.resources | nindent 12 }}
