@@ -80,7 +80,7 @@ spec:
             - name: DEFAULT_PIPELINE_VERSION
               value: {{ default .Chart.AppVersion .Values.image.version | quote }}
             {{- end }}
-            {{- if .Values.worker.efs.enabled }}
+            {{- if .Values.app_deployment.efs.enabled }}
             - name: EFS_DIRECTORY
               value: {{ default "/efs" .Values.worker.efs.efsDir | quote }}
             {{- end }}
