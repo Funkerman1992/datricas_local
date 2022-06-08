@@ -89,7 +89,7 @@ spec:
           ports:
             - name: port-8000
               containerPort: 8000
-          {{- if .Values.worker.efs.enabled }}
+          {{- if .Values.app_deployment.efs.enabled }}
           volumeMounts:
           - name: worker-efs
             mountPath: {{ default "/efs" .Values.app_deployment.efs.efsDir | quote }}
