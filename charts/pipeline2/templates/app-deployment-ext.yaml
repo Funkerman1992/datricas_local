@@ -95,7 +95,7 @@ spec:
             mountPath: {{ default "/efs" .Values.app_deployment.efs.efsDir | quote }}
           {{- end }}
           resources:
-            {{- toYaml .Values.app.resources | nindent 12 }}
+            {{- toYaml .Values.app_deployment.resources | nindent 12 }}
       {{- if .Values.app_deployment.efs.enabled }}
       volumes:
       - name: worker-efs
