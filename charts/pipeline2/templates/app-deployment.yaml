@@ -91,7 +91,7 @@ spec:
               containerPort: 8000
           {{- if .Values.app.efs.enabled }}
           volumeMounts:
-          - name: app-efs-pv
+          - name: app-efs
             mountPath: {{ default "/efs" .Values.app.efs.efsDir | quote }}
           {{- end }}
           resources:
