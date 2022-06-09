@@ -113,16 +113,6 @@ entries:
   pipeline2:
   - apiVersion: v2
     appVersion: 1.2.14
-    created: "2022-06-09T16:34:45.486414+03:00"
-    description: Datrics Pipeline Helm chart for Kubernetes
-    digest: d499384b51ac2e47f28df31fe7715b0ac73183a2a687b394704b78b637a0837a
-    name: pipeline2
-    type: application
-    urls:
-    - charts/pipeline2-1.5.8.tgz
-    version: 1.5.8
-  - apiVersion: v2
-    appVersion: 1.2.14
     created: "2022-06-09T16:34:45.485981+03:00"
     description: Datrics Pipeline Helm chart for Kubernetes
     digest: 10e4f1cb6b68026cc1e292613f3210dc585e144f8cc4edd1f40f2c338d6244f2

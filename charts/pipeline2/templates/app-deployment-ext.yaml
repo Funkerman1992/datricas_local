@@ -91,16 +91,16 @@ spec:
               containerPort: 8000
           {{- if .Values.app.efs.enabled }}
           volumeMounts:
-          - name: worker-efs
+          - name: app-efs
             mountPath: {{ default "/efs" .Values.app.efs.efsDir | quote }}
           {{- end }}
           resources:
             {{- toYaml .Values.app_deployment.resources | nindent 12 }}
       {{- if .Values.app.efs.enabled }}
       volumes:
-      - name: worker-efs
+      - name: app-efs
         persistentVolumeClaim:
-          claimName: worker-efs
+          claimName: app-efs
       {{- end }}
       {{- with .Values.app.nodeSelector }}
       nodeSelector:
