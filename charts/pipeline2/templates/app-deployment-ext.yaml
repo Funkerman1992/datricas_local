@@ -80,23 +80,23 @@ spec:
             - name: DEFAULT_PIPELINE_VERSION
               value: {{ default .Chart.AppVersion .Values.image.version | quote }}
             {{- end }}
-            {{- if .Values.app_deployment.efs.enabled }}
+            {{- if .Values.app.efs.enabled }}
             - name: EFS_DIRECTORY
-              value: {{ default "/efs" .Values.app_deployment.efs.efsDir | quote }}
+              value: {{ default "/efs" .Values.app.efs.efsDir | quote }}
             {{- end }}
           command: {{- toYaml .Values.app.command | nindent 12  }}
           args: {{- toYaml .Values.app.args | nindent 12 }}
           ports:
             - name: port-8000
               containerPort: 8000
-          {{- if .Values.app_deployment.efs.enabled }}
+          {{- if .Values.app.efs.enabled }}
           volumeMounts:
           - name: worker-efs
-            mountPath: {{ default "/efs" .Values.app_deployment.efs.efsDir | quote }}
+            mountPath: {{ default "/efs" .Values.app.efs.efsDir | quote }}
           {{- end }}
           resources:
             {{- toYaml .Values.app_deployment.resources | nindent 12 }}
-      {{- if .Values.app_deployment.efs.enabled }}
+      {{- if .Values.app.efs.enabled }}
       volumes:
       - name: worker-efs
         persistentVolumeClaim:
