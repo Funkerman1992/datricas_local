@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: worker-efs
+  name: app-efs
 spec:
   {{ if .Values.app.efs.pvc }}
   {{- toYaml .Values.app.efs.pvc | nindent 2  }}
