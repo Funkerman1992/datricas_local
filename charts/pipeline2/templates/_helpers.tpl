@@ -9,7 +9,7 @@ Expand the name of the chart.
 
 {{- define "pipeline2.app-deployment.name" -}}
 {{- $defaultName := printf "%s-app-deployment" .Chart.Name -}}
-{{- default $defaultName .Values.appdeployment.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- default $defaultName .Values.app.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "pipeline2.worker.name" -}}
@@ -52,10 +52,10 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{- define "pipeline2.app-deployment.fullname" -}}
-{{- if .Values.appdeployment.fullnameOverride -}}
-{{- .Values.appdeployment.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.app_deployment.fullnameOverride -}}
+{{- .Values.app_deployment.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- $defaultName := default .Chart.Name .Values.appdeployment.nameOverride -}}
+{{- $defaultName := default .Chart.Name .Values.app_deployment.nameOverride -}}
 {{- $name := printf "%s-app-deployment" $defaultName -}}
 {{- if contains $name .Release.Name -}}
 {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
@@ -64,7 +64,6 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 {{- end -}}
-
 
 {{/*
 Create a default fully qualified app name.
