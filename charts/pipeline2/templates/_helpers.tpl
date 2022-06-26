@@ -9,7 +9,7 @@ Expand the name of the chart.
 
 {{- define "pipeline2.app-deployment.name" -}}
 {{- $defaultName := printf "%s-app-deployment" .Chart.Name -}}
-{{- default $defaultName .Values.app.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- default $defaultName .Values.app_deployment.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "pipeline2.worker.name" -}}
